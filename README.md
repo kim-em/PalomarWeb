@@ -116,6 +116,24 @@ The scores are not published and are not in the record; a served record that had
 them would mean something upstream had gone wrong, and displaying it would be
 the worst moment to find out.
 
+The site accepts the sole current entry contract, `schema_version: 2`, and
+requires its source-preservation receipt. The unused pre-launch v1 draft has no
+browser fallback; an obsolete or malformed record fails closed.
+The deployed data already contains only v2 entries and preservation-backed
+recent projections. The pre-launch removal therefore deploys this Web cleanup
+first, so its workflows stop fetching `schema-v1.json`; Database can then stop
+publishing and serving that obsolete document without breaking Web deployment.
+That ordering is gated by a complete public traversal: CI and Pages deployment
+walk the browse hierarchy, reconcile every per-result version index, and run the
+Web entry validator over every active permalink before an artifact is uploaded.
+The hourly published-site check repeats it. This is intentionally O(A) in
+active versions and is deployment/monitoring cost, not visitor page-load cost.
+
+This cleanup does not renumber unrelated documents. `recent.json`, per-result
+version indexes, browse/search projections, and source availability remain
+their existing `schema_version: 1` protocols, as do independent render and
+evidence metadata formats. Only the accepted-entry contract is v2-only.
+
 The website is a presentation layer only. Public data and schemas live at the
 machine-readable data origin. A versioned ID
 such as `PALOMAR-2026-07-29-000001-v1` names one immutable record. An ID without
